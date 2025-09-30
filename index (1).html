@@ -1,0 +1,152 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools for Accountants & Bookkeepers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 scroll-smooth">
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white min-h-screen flex flex-col justify-center items-center text-center px-4">
+        <h1 class="text-5xl md:text-6xl font-bold mb-4 fade-in">AI Tools for Accountants</h1>
+        <p class="text-xl md:text-2xl mb-8 fade-in max-w-2xl">Transform your accounting practice with cutting-edge AI solutions designed for efficiency and precision.</p>
+        <a href="#features" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-full text-lg fade-in transition duration-300">Discover Tools</a>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow sticky top-0 z-10">
+        <ul class="flex justify-center space-x-6 py-4">
+            <li><a href="#home" class="text-blue-600 hover:text-blue-800 font-medium">Home</a></li>
+            <li><a href="#features" class="text-blue-600 hover:text-blue-800 font-medium">Features</a></li>
+            <li><a href="#contact" class="text-blue-600 hover:text-blue-800 font-medium">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 md:px-8 bg-white">
+        <h2 class="text-4xl font-bold text-center mb-12 fade-in">Our AI-Powered Tools</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">AI Receptionist</h3>
+                <p class="mb-4">A smart virtual receptionist handling client inquiries and scheduling 24/7.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">AI-Enabled Website</h3>
+                <p class="mb-4">Build a dynamic website with AI-driven client interaction and integration.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">SMS Reminders</h3>
+                <p class="mb-4">Automated SMS to remind clients to send monthly statements on time.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">CRA Deadline Reminders</h3>
+                <p class="mb-4">Personalized alerts for clients to meet Canadian Revenue Agency deadlines.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">PDF Bank Statements</h3>
+                <p class="mb-4">Generate and manage PDF bank statements with AI formatting.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">Bank Statement Upload</h3>
+                <p class="mb-4">Secure, AI-organized system for uploading bank statements.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">Receipt Uploader</h3>
+                <p class="mb-4">Upload receipts with OCR to extract data automatically.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">Auto Categorize Expenses</h3>
+                <p class="mb-4">AI-driven expense categorization for accurate bookkeeping.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">AI Customer Service (Beta)</h3>
+                <p class="mb-4">AI chatbot for efficient customer service query handling.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">HST Estimator</h3>
+                <p class="mb-4">Predict Harmonized Sales Tax with AI-driven range estimates.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">Cashflow Estimator</h3>
+                <p class="mb-4">AI-powered cash flow predictions for smarter financial planning.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">Client Acquisition</h3>
+                <p class="mb-4">AI tools for targeted marketing and lead generation.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 fade-in">
+                <h3 class="text-2xl font-semibold text-blue-600 mb-4">File Naming Structure</h3>
+                <p class="mb-4">AI-enforced file naming for organization and compliance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 px-4 md:px-8 bg-white">
+        <h2 class="text-4xl font-bold text-center mb-12 fade-in">Contact Us</h2>
+        <p class="text-center text-lg mb-4 fade-in">Reach out to learn more about our AI solutions!</p>
+        <p class="text-center text-lg mb-8 fade-in">Email: <a href="mailto:shane@paretotech.ca" class="text-blue-600 hover:text-blue-800">shane@paretotech.ca</a></p>
+        <!-- Calendly inline widget begin -->
+        <div class="calendly-inline-widget" data-url="https://calendly.com/shane-paretotech" style="min-width:320px;height:700px;"></div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+        <!-- Calendly inline widget end -->
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white text-center py-6">
+        <p>&copy; 2025 Pareto Tech Inc. All rights reserved.</p>
+    </footer>
+</body>
+</html>
